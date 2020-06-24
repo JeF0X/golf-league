@@ -6,7 +6,7 @@ using UnityEngine;
 public class Hole : MonoBehaviour
 {
     public static event Action<Ball> OnHoleEntered;
-    BoxCollider boxCollider;
+
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("test");
@@ -14,7 +14,6 @@ public class Hole : MonoBehaviour
         {
             if (other.tag == "Player")
             {
-                
                 OnHoleEntered(other.gameObject.GetComponent<Ball>());
             }           
         }

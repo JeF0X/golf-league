@@ -14,11 +14,6 @@ public class Shooter : MonoBehaviour
     void Update()
     {
         HandleTouchInput();
-
-        if (ball != null)
-        {
-            DrawForceMeterLine();
-        }
     }
 
     private void HandleTouchInput()
@@ -32,12 +27,13 @@ public class Shooter : MonoBehaviour
                 CheckIfTouchHitPlayerBall(touch);
             }
 
-            if (ball != null)
-            {
+            if (ball != null && !ball.isMoving)
+            { 
                 MapScreenTouchToWorld(touch);
+                DrawForceMeterLine();
             }
 
-            if (touch.phase == TouchPhase.Ended && ball != null)
+            if (touch.phase == TouchPhase.Ended && ball != null && !ball.isMoving)
             {
                 ShootBall();
             }
@@ -55,6 +51,10 @@ public class Shooter : MonoBehaviour
             if (raycastHit.collider.tag == "Player")
             {
                 ball = raycastHit.collider.GetComponent<Ball>();
+                if (!IsBallCurrentPlayers())
+                {
+                    ball = null;
+                }
             }
         }
     }
@@ -66,6 +66,7 @@ public class Shooter : MonoBehaviour
         ball.shotsTaken++;
         ball.line.gameObject.SetActive(false);
         ball = null;
+        MatchManager.Instance.matchState = MatchState.Shoot;
     }
 
     private void MapScreenTouchToWorld(Touch touch)
@@ -97,5 +98,18 @@ public class Shooter : MonoBehaviour
         ball.line.gameObject.SetActive(true);
         ball.line.SetPosition(0, ball.transform.position);
         ball.line.SetPosition(1, lineVector);
+    }
+
+    private bool IsBallCurrentPlayers()
+    {
+        Player currentPlayer = MatchManager.Instance.GetCurrentPlayer();
+        if (currentPlayer.balls.Contains(ball))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

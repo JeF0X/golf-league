@@ -2,22 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System;
 
 public class Ball : MonoBehaviour
 {
     [SerializeField] float maxAngularVelocity = 20f;
 
     public int shotsTaken = 0;
+    public bool isMoving = false;
+    public bool isInHole = false;
     float maxVelocity = 0f;
 
-    CinemachineVirtualCamera camera;
+    public CinemachineVirtualCamera ballCamera;
     public LineRenderer line;
     Rigidbody myRigidBody;
 
     private void Start()
     {
-        camera = GetComponentInChildren<CinemachineVirtualCamera>();
-        camera.enabled = false;
+        ballCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+        ballCamera.enabled = false;
         myRigidBody = GetComponent<Rigidbody>();
         myRigidBody.maxAngularVelocity = maxAngularVelocity;
         line = GetComponentInChildren<LineRenderer>();
@@ -27,6 +30,7 @@ public class Ball : MonoBehaviour
     private void FixedUpdate()
     {
         //DebugVelocities();
+        isMoving = !myRigidBody.IsSleeping();
 
         if (myRigidBody.velocity.magnitude < 1f && myRigidBody.velocity.magnitude > 0.0001f)
         {

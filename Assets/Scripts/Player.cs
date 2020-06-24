@@ -1,16 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] Ball debugBallPrefab;
 
-    User user;
-    string playerName;
-    Team team;
+    int currentBallIndex = 0;
+    public string playerName;
+    User user;  
+    public Team team;
+
     public List<Ball> balls = new List<Ball>();
 
+    public Player(User user, string name, List<Ball> balls)
+    {
+        this.user = user;
+        this.playerName = name;
+        this.balls = balls;
+    }
 
     private void Start()
     {
@@ -26,17 +35,30 @@ public class Player : MonoBehaviour
         if (balls.Contains(ball))
         {
             Goal newGoal = new Goal(Time.time, this, ball.shotsTaken);
+            ball.isInHole = true;
             //FindObjectOfType<Score>().AddGoal(newGoal);
             team.IncrementScore();
             Debug.Log(team.teamName + ": Scored a hole in " + ball.shotsTaken + " shots. They now have " + team.score + " goals.");
         }
     }
 
-    public Player(User user, string name, List<Ball> balls)
+    public bool AreAllBallsInHole()
     {
-        this.user = user;
-        this.playerName = name;
-        this.balls = balls;
+        foreach (var ball in balls)
+        {
+            if (!ball.isInHole)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+    public void ToggleCamera(bool isCameraOn)
+    {
+        balls[currentBallIndex].ballCamera.enabled = isCameraOn;
     }
 
     private void DebugPlayer()
