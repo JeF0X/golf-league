@@ -23,8 +23,7 @@ public class MatchManager : MonoBehaviour
 
     private static MatchManager _instance;
     public static MatchManager Instance {  get { return _instance; } }
-
-    private void Start()
+    private void Awake()
     {
         if (_instance != null && _instance != this)
         {
@@ -34,8 +33,11 @@ public class MatchManager : MonoBehaviour
         {
             _instance = this;
         }
-
         matchState = MatchState.Start;
+    }
+
+    private void Start()
+    {
         players = FindObjectsOfType<Player>();
         balls = FindObjectsOfType<Ball>();
     }
