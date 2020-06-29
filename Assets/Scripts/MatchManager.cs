@@ -12,14 +12,14 @@ public enum MatchState
 
 public class MatchManager : MonoBehaviour
 {
-    [SerializeField] Transform player1StartPosition;
-    [SerializeField] Transform player2StartPosition;
+    public Transform debugBallStartPos;
 
     public MatchState matchState;
     private MatchState prevMatchState;
-    Player[] players;
+    public Player[] players;
     int currentPlayerIndex = 0;
-    Ball[] balls;
+    public Ball[] balls;
+    bool isGameInitialized = false;
 
     private static MatchManager _instance;
     public static MatchManager Instance {  get { return _instance; } }
@@ -33,32 +33,32 @@ public class MatchManager : MonoBehaviour
         {
             _instance = this;
         }
-        matchState = MatchState.Start;
+        
     }
 
     private void Start()
-    {
-        players = FindObjectsOfType<Player>();
-        balls = FindObjectsOfType<Ball>();
+    { 
+
     }
 
     private void Update()
     {
         if (matchState == MatchState.Start)
         {
-            SetCamera();
-            matchState = MatchState.PlayerTurn;
+            InitializeMatch();
+            matchState = MatchState.PlaceBalls;
         }
 
         if (matchState == MatchState.Shoot && !AreBallsMoving())
         {
             ChangePlayer();
-            Debug.Log(players[currentPlayerIndex].playerName + " turn");
+            Debug.Log(players[currentPlayerIndex] + ": " + players[currentPlayerIndex].playerName + " turn");
             matchState = MatchState.PlayerTurn;
         }
 
         if (matchState == MatchState.PlayerTurn)
         {
+            SetCamera();
             if (HasMatchStateChanged())
             {
                 int ballsInHole = 0;
@@ -172,7 +172,14 @@ public class MatchManager : MonoBehaviour
 
     private void InitializeMatch()
     {
-
+        if (!isGameInitialized)
+        {
+            players = FindObjectsOfType<Player>();
+            balls = FindObjectsOfType<Ball>();
+            //matchState = MatchState.Start;
+            isGameInitialized = true;
+        }
+        
     }
 
 

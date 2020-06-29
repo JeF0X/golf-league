@@ -14,10 +14,18 @@ public class Shooter : MonoBehaviour
     void Update()
     {
         HandleTouchInput();
+        if (MatchManager.Instance.matchState == MatchState.Shoot)
+        {
+            ball = null;
+        }
     }
 
     private void HandleTouchInput()
     {
+        if (MatchManager.Instance.matchState != MatchState.PlayerTurn)
+        {
+            return;
+        }
         if (Input.touchCount > 0)
         {        
             Touch touch = Input.GetTouch(0);

@@ -5,7 +5,7 @@ using Cinemachine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] Ball debugBallPrefab;
+    [SerializeField] Ball ballPrefab = null;
 
     int currentBallIndex = 0;
     public string playerName;
@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     public Team team;
 
     public List<Ball> balls = new List<Ball>();
+
+    PlayerInfo playerInfo;
 
     public Player(User user, string name, List<Ball> balls)
     {
@@ -28,6 +30,26 @@ public class Player : MonoBehaviour
         {
             team = new Team();
         }
+    }
+
+    public void SetPlayerInfo(PlayerInfo playerInfo)
+    {
+        this.playerInfo = playerInfo;
+        balls = CreatePlayerBalls(playerInfo);
+        playerName = playerInfo.playerName;
+    }
+
+    private List<Ball> CreatePlayerBalls(PlayerInfo player)
+    {
+        List<Ball> playerBalls = new List<Ball>();
+        foreach (var ballInfo in player.balls)
+        {
+            Transform debugBallPos = MatchManager.Instance.debugBallStartPos;
+            Ball ball = Instantiate(ballPrefab, debugBallPos.position, Quaternion.identity);
+            ball.SetInfo(ballInfo);     
+            playerBalls.Add(ball);
+        }
+        return playerBalls;
     }
 
     private void Hole_OnHoleEntered(Ball ball)
@@ -54,26 +76,9 @@ public class Player : MonoBehaviour
         return true;
     }
 
-
-
     public void ToggleCamera(bool isCameraOn)
     {
         balls[currentBallIndex].ballCamera.enabled = isCameraOn;
-    }
-
-    private void DebugPlayer()
-    {
-        List<Ball> player1Balls = new List<Ball>();
-        List<Ball> player2Balls = new List<Ball>();
-
-        player1Balls.Add(debugBallPrefab);
-        player2Balls.Add(debugBallPrefab);
-
-        Player player1 = new Player(null, "Player1", player1Balls);
-        Player player2 = new Player(null, "Player2", player2Balls);
-
-        Instantiate(player1);
-        Instantiate(player2);
     }
 
     private void OnDestroy()

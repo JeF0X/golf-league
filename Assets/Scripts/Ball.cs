@@ -16,6 +16,7 @@ public class Ball : MonoBehaviour
     public CinemachineVirtualCamera ballCamera;
     public LineRenderer line;
     Rigidbody myRigidBody;
+    BallInfo ballInfo;
 
     private void Start()
     {
@@ -36,6 +37,11 @@ public class Ball : MonoBehaviour
         {
             DampenAngularVelocity();
         }
+    }
+
+    internal void SetInfo(BallInfo ballInfo)
+    {
+        this.ballInfo = ballInfo;
     }
 
     public void ResetBall()
