@@ -37,7 +37,8 @@ public class Shooter : MonoBehaviour
 
             if (ball != null && !ball.isMoving)
             { 
-                MapScreenTouchToWorld(touch);
+                touchInBallPlane = TouchHandler.MapScreenTouchToWorld(touch, ball.transform.position);
+                touchWorldTravel = Vector3.Distance(ball.transform.position, touchInBallPlane);
                 DrawForceMeterLine();
             }
 
@@ -75,29 +76,6 @@ public class Shooter : MonoBehaviour
         ball.line.gameObject.SetActive(false);
         ball = null;
         MatchManager.Instance.matchState = MatchState.Shoot;
-    }
-
-    private void MapScreenTouchToWorld(Touch touch)
-    {
-        Vector3 screenTouchPosNearPlane = new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane);
-        Vector3 touchPosNearPlane = Camera.main.ScreenToWorldPoint(screenTouchPosNearPlane);
-        Vector3 screenTouchPosFarPlane = new Vector3(touch.position.x, touch.position.y, Camera.main.farClipPlane);
-        Vector3 touchPosFarPlane = Camera.main.ScreenToWorldPoint(screenTouchPosFarPlane);
-
-        Ray cameraNearFarPlaneRay = new Ray(touchPosNearPlane, touchPosFarPlane - touchPosNearPlane);
-        Plane ballPlane = new Plane(Vector3.up, ball.transform.position);
-        float nearPlaneToBallDistance = 0;
-        touchInBallPlane = new Vector3();
-        if (ballPlane.Raycast(cameraNearFarPlaneRay, out nearPlaneToBallDistance))
-        {
-            touchInBallPlane = cameraNearFarPlaneRay.GetPoint(nearPlaneToBallDistance);
-        }
-        else
-        {
-            Debug.LogError("Cannot find ball plane");
-        }
-
-        touchWorldTravel = Vector3.Distance(ball.transform.position, touchInBallPlane);
     }
 
     private void DrawForceMeterLine()

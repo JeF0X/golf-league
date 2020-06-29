@@ -42,12 +42,16 @@ public class Player : MonoBehaviour
     private List<Ball> CreatePlayerBalls(PlayerInfo player)
     {
         List<Ball> playerBalls = new List<Ball>();
+        Vector3 debugBallPos = MatchManager.Instance.debugBallStartPos.position;
         foreach (var ballInfo in player.balls)
         {
-            Transform debugBallPos = MatchManager.Instance.debugBallStartPos;
-            Ball ball = Instantiate(ballPrefab, debugBallPos.position, Quaternion.identity);
+            Debug.Log(debugBallPos);
+
+            Ball ball = Instantiate(ballPrefab, debugBallPos, Quaternion.identity);
+            debugBallPos.z += 1f;
+            
             ball.SetInfo(ballInfo);     
-            playerBalls.Add(ball);
+            playerBalls.Add(ball);  
         }
         return playerBalls;
     }
