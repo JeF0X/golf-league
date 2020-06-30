@@ -10,7 +10,7 @@ public enum MatchState
     Start, PlaceBalls, PlayerTurn, Shoot, End
 }
 
-public class MatchManager : MonoBehaviour
+public class MatchManager : GLStateMachine
 {
     public Transform debugBallStartPos;
 
@@ -49,6 +49,11 @@ public class MatchManager : MonoBehaviour
             matchState = MatchState.PlaceBalls;
         }
 
+        if (matchState == MatchState.PlaceBalls)
+        {
+            
+        }
+
         if (matchState == MatchState.Shoot && !AreBallsMoving())
         {
             ChangePlayer();
@@ -58,7 +63,7 @@ public class MatchManager : MonoBehaviour
 
         if (matchState == MatchState.PlayerTurn)
         {
-            SetCamera();
+            //SetCamera();
             if (HasMatchStateChanged())
             {
                 int ballsInHole = 0;
