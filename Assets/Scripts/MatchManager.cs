@@ -7,22 +7,25 @@ using Cinemachine;
 
 public enum MatchState
 {
-    Start, PlaceBalls, PlayerTurn, Shoot, End
+    Start, PlaceBalls, FindBalls, PlayerTurn, ShotInProgress, End
 }
 
-public class MatchManager : GLStateMachine
+public class MatchManager : MonoBehaviour
 {
     public Transform debugBallStartPos;
 
     public MatchState matchState;
     private MatchState prevMatchState;
-    public Player[] players;
+    Player[] players;
     int currentPlayerIndex = 0;
-    public Ball[] balls;
+    Player currentPlayer = null;
+    Ball[] balls;
     bool isGameInitialized = false;
 
     private static MatchManager _instance;
+    
     public static MatchManager Instance {  get { return _instance; } }
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -33,12 +36,6 @@ public class MatchManager : GLStateMachine
         {
             _instance = this;
         }
-        
-    }
-
-    private void Start()
-    { 
-
     }
 
     private void Update()
@@ -54,18 +51,22 @@ public class MatchManager : GLStateMachine
             
         }
 
-        if (matchState == MatchState.Shoot && !AreBallsMoving())
+        if (matchState == MatchState.FindBalls)
         {
-            ChangePlayer();
-            Debug.Log(players[currentPlayerIndex] + ": " + players[currentPlayerIndex].playerName + " turn");
+            balls = FindObjectsOfType<Ball>();
+            foreach (var ball in balls)
+            {
+                ball.GetComponent<Rigidbody>().WakeUp();
+            }
+            SaveBallPositions();
             matchState = MatchState.PlayerTurn;
         }
 
         if (matchState == MatchState.PlayerTurn)
         {
-            //SetCamera();
+            SetCamera();
             if (HasMatchStateChanged())
-            {
+            {  
                 int ballsInHole = 0;
                 foreach (var ball in balls)
                 {
@@ -81,14 +82,22 @@ public class MatchManager : GLStateMachine
                     return;
                 }
                 Debug.Log(prevMatchState + " " + matchState);
-                if (players[currentPlayerIndex].AreAllBallsInHole())
+                if (currentPlayer.AreAllBallsInHole())
                 {
                     ChangePlayer();
                     return;
                 }
 
                 SetCamera();
-            } 
+            }
+        }
+
+        if (matchState == MatchState.ShotInProgress && !AreBallsMoving())
+        {
+            SaveBallPositions();
+            ChangePlayer();
+            Debug.Log(players[currentPlayerIndex] + ": " + players[currentPlayerIndex].playerName + " turn");
+            matchState = MatchState.PlayerTurn;
         }
 
         if (matchState == MatchState.End)
@@ -100,6 +109,7 @@ public class MatchManager : GLStateMachine
             }
 
         }
+
         prevMatchState = matchState;
     }
 
@@ -142,7 +152,7 @@ public class MatchManager : GLStateMachine
     {
         for (int i = 0; i < players.Length; i++)
         {
-            if (i == currentPlayerIndex)
+            if (players[i] == currentPlayer)
             {
                 players[i].ToggleCamera(true);
             }
@@ -160,6 +170,7 @@ public class MatchManager : GLStateMachine
         {
             currentPlayerIndex = 0;
         }
+        currentPlayer = players[currentPlayerIndex];
     }
 
     private bool AreBallsMoving()
@@ -175,12 +186,21 @@ public class MatchManager : GLStateMachine
         return false;
     }
 
+    private void SaveBallPositions()
+    {
+        foreach (var ball in balls)
+        {
+            ball.SaveBallPosition();
+        }
+        Debug.Log("Positions saved");
+    }
+
     private void InitializeMatch()
     {
         if (!isGameInitialized)
         {
             players = FindObjectsOfType<Player>();
-            balls = FindObjectsOfType<Ball>();
+            currentPlayer = players[0];
             //matchState = MatchState.Start;
             isGameInitialized = true;
         }
@@ -195,6 +215,24 @@ public class MatchManager : GLStateMachine
 
     public Player GetCurrentPlayer()
     {
-        return players[currentPlayerIndex];
+        return currentPlayer;
+    }
+
+    public void PlayerReady()
+    {
+        if (currentPlayer == players[players.Length-1])
+        {
+            matchState = MatchState.FindBalls;
+        }
+        else
+        {
+            ChangePlayer();
+        }
+        
+    }
+
+    public void ChangeBall()
+    {
+        currentPlayer.ChangeBall();
     }
 }

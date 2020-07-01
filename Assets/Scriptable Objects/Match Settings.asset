@@ -17,12 +17,12 @@ MonoBehaviour:
     playerColor: {r: 1, g: 0, b: 0, a: 0}
     balls:
     - {fileID: 11400000, guid: ea6c4fa5ea1c9364dad75688852385f5, type: 2}
+    - {fileID: 11400000, guid: ea6c4fa5ea1c9364dad75688852385f5, type: 2}
+    - {fileID: 11400000, guid: ea6c4fa5ea1c9364dad75688852385f5, type: 2}
   - playerName: Player 2
     playerColor: {r: 0, g: 1, b: 0.0399971, a: 0}
     balls:
     - {fileID: 11400000, guid: ea6c4fa5ea1c9364dad75688852385f5, type: 2}
-  - playerName: Player 3
-    playerColor: {r: 0, g: 1, b: 0.0399971, a: 0}
-    balls:
+    - {fileID: 11400000, guid: ea6c4fa5ea1c9364dad75688852385f5, type: 2}
     - {fileID: 11400000, guid: ea6c4fa5ea1c9364dad75688852385f5, type: 2}
   levelName: ' Debug Level'

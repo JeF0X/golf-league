@@ -14,7 +14,7 @@ public class Shooter : MonoBehaviour
     void Update()
     {
         HandleTouchInput();
-        if (MatchManager.Instance.matchState == MatchState.Shoot)
+        if (MatchManager.Instance.matchState == MatchState.ShotInProgress)
         {
             ball = null;
         }
@@ -75,7 +75,7 @@ public class Shooter : MonoBehaviour
         ball.shotsTaken++;
         ball.line.gameObject.SetActive(false);
         ball = null;
-        MatchManager.Instance.matchState = MatchState.Shoot;
+        MatchManager.Instance.matchState = MatchState.ShotInProgress;
     }
 
     private void DrawForceMeterLine()

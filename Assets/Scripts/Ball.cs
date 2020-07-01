@@ -12,6 +12,8 @@ public class Ball : MonoBehaviour
     public bool isMoving = false;
     public bool isInHole = false;
     float maxVelocity = 0f;
+    Vector3 positionBeforeShot = new Vector3();
+    Color color = Color.white;
 
     public CinemachineVirtualCamera ballCamera;
     public LineRenderer line;
@@ -28,8 +30,19 @@ public class Ball : MonoBehaviour
         line.gameObject.SetActive(false);
     }
 
+    public void SetColor(Color color)
+    {
+        Material ballMaterial = new Material(GetComponent<MeshRenderer>().material);
+        ballMaterial.color = color;
+        GetComponent<MeshRenderer>().material = ballMaterial;
+    }
+
     private void FixedUpdate()
     {
+        if (MatchManager.Instance.matchState == MatchState.PlaceBalls)
+        {
+            myRigidBody.Sleep();
+        }
         //DebugVelocities();
         isMoving = !myRigidBody.IsSleeping();
 
@@ -42,6 +55,7 @@ public class Ball : MonoBehaviour
     internal void SetInfo(BallInfo ballInfo)
     {
         this.ballInfo = ballInfo;
+        this.color = ballInfo.color;
     }
 
     public void ResetBall()
@@ -68,6 +82,17 @@ public class Ball : MonoBehaviour
         {
             myRigidBody.Sleep();
         }
+    }
+
+    public void RespawnBall()
+    {
+        myRigidBody.Sleep();
+        transform.position = positionBeforeShot;
+    }
+
+    public void SaveBallPosition()
+    {
+        positionBeforeShot = transform.position;
     }
 
 }

@@ -5,6 +5,7 @@ using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
+    [SerializeField] CinemachineVirtualCamera startCamera = null;
     CinemachineVirtualCamera[] cameras;
 
     private static CameraManager _instance;
@@ -26,6 +27,18 @@ public class CameraManager : MonoBehaviour
     private void Start()
     {
         cameras = FindObjectsOfType<CinemachineVirtualCamera>();
+    }
+
+    private void Update()
+    {
+        if (MatchManager.Instance.matchState != MatchState.PlaceBalls)
+        {
+            startCamera.enabled = false;
+        }
+        else
+        {
+            startCamera.enabled = true;
+        }
     }
 
     public void SetActiveCamera(CinemachineVirtualCamera cameraToActivate)

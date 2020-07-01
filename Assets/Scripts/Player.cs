@@ -8,9 +8,12 @@ public class Player : MonoBehaviour
     [SerializeField] Ball ballPrefab = null;
 
     int currentBallIndex = 0;
+    Ball currentBall;
+    public StartArea startArea;
     public string playerName;
     User user;  
     public Team team;
+    public Color color;
 
     public List<Ball> balls = new List<Ball>();
 
@@ -32,32 +35,41 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetPlayerInfo(PlayerInfo playerInfo)
+    public void SetPlayerInfo(PlayerInfo playerInfo, StartArea startArea)
     {
         this.playerInfo = playerInfo;
+        this.startArea = startArea;
         balls = CreatePlayerBalls(playerInfo);
         playerName = playerInfo.playerName;
+        color = playerInfo.playerColor;
     }
 
     private List<Ball> CreatePlayerBalls(PlayerInfo player)
     {
         List<Ball> playerBalls = new List<Ball>();
-        Vector3 debugBallPos = MatchManager.Instance.debugBallStartPos.position;
         foreach (var ballInfo in player.balls)
         {
-            Debug.Log(debugBallPos);
 
-            Ball ball = Instantiate(ballPrefab, debugBallPos, Quaternion.identity);
-            debugBallPos.z += 1f;
+            Ball ball = ballPrefab;
             
             ball.SetInfo(ballInfo);     
             playerBalls.Add(ball);  
         }
+        currentBall = balls[0];
         return playerBalls;
     }
 
-    private void Hole_OnHoleEntered(Ball ball)
+    private void Hole_OnHoleEntered(Ball ball, Hole hole)
     {
+        if (!balls.Contains(ball))
+        {
+            return;
+        }
+        if (hole == startArea.hole)
+        {
+            ball.RespawnBall();
+            return;
+        }
         if (balls.Contains(ball))
         {
             Goal newGoal = new Goal(Time.time, this, ball.shotsTaken);
@@ -83,6 +95,24 @@ public class Player : MonoBehaviour
     public void ToggleCamera(bool isCameraOn)
     {
         balls[currentBallIndex].ballCamera.enabled = isCameraOn;
+    }
+
+    public void ChangeBall()
+    {
+        if (currentBall == null)
+        {
+            currentBall = balls[0];
+        }
+        Ball prevBall = currentBall;
+        currentBallIndex++;
+        if (currentBallIndex >= balls.Count)
+        {
+            currentBallIndex = 0;
+        }
+        currentBall = balls[currentBallIndex];
+
+        currentBall.ballCamera.enabled = true;
+        prevBall.ballCamera.enabled = false;
     }
 
     private void OnDestroy()

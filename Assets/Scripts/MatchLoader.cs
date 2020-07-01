@@ -9,9 +9,11 @@ public class MatchLoader : MonoBehaviour
     [SerializeField] Player playerPrefab = null;
 
     Player[] players;
+    StartArea[] startAreas;
 
     private void Awake()
     {
+        startAreas = FindObjectsOfType<StartArea>();
         CreatePlayers();
     }
 
@@ -29,11 +31,13 @@ public class MatchLoader : MonoBehaviour
 
     public void CreatePlayers()
     {
+        int startAreaIndex = 0;
         foreach (var playerInfo in matchSettings.players)
         {
             Player player = playerPrefab;
-            player.SetPlayerInfo(playerInfo);
+            player.SetPlayerInfo(playerInfo, startAreas[startAreaIndex]);
             Instantiate(player);
+            startAreaIndex++;
         }
     }
 }

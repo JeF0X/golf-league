@@ -7,4 +7,5 @@ using UnityEngine;
 public class BallInfo : ScriptableObject
 {
     public string textureId = "test1234";
+    public Color color = Color.white;
 }
