@@ -12,15 +12,20 @@ public enum MatchState
 
 public class MatchManager : MonoBehaviour
 {
-    public Transform debugBallStartPos;
+    [SerializeField] float matchTimeInSeconds = 120f;
 
+    public Transform debugBallStartPos;
     public MatchState matchState;
     private MatchState prevMatchState;
     Player[] players;
+    public List<Team> teams = new List<Team>();
     int currentPlayerIndex = 0;
     Player currentPlayer = null;
     Ball[] balls;
     bool isGameInitialized = false;
+    bool startTimer = false;
+
+    public float matchTimer = 0;
 
     private static MatchManager _instance;
     
@@ -38,8 +43,27 @@ public class MatchManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        matchTimer = matchTimeInSeconds;
+    }
+
     private void Update()
     {
+        if (startTimer)
+        {
+            matchTimer -= Time.deltaTime;
+        }
+
+        if (matchTimer <= 0)
+        {
+            if (matchState == MatchState.PlayerTurn)
+            {
+                matchState = MatchState.End;
+            }
+            startTimer = false;
+        }
+
         if (matchState == MatchState.Start)
         {
             InitializeMatch();
@@ -64,6 +88,7 @@ public class MatchManager : MonoBehaviour
 
         if (matchState == MatchState.PlayerTurn)
         {
+            startTimer = true;
             SetCamera();
             if (HasMatchStateChanged())
             {  
@@ -105,6 +130,7 @@ public class MatchManager : MonoBehaviour
             if (HasMatchStateChanged())
             {
                 Debug.Log("Match Ended");
+                FindObjectOfType<CinemachineCoreGetInputTouchAxis>().GetComponent<CinemachineCoreGetInputTouchAxis>().enabled = false;
                 DebugScores();
             }
 
@@ -113,9 +139,10 @@ public class MatchManager : MonoBehaviour
         prevMatchState = matchState;
     }
 
-    private void DebugScores()
+    public string DebugScores()
     {
         Player playerwithHighestScore = null;
+        string winner;
 
         foreach (var player in players)
         {
@@ -129,11 +156,13 @@ public class MatchManager : MonoBehaviour
             }
             else if (player.team.score == playerwithHighestScore.team.score)
             {
-                Debug.Log("It's a tie with " + playerwithHighestScore.team.score + " shots.");
-                return;
+                winner = "It's a tie with " + playerwithHighestScore.team.score + " goals.";
+                
+                return winner;
             }
         }
-        Debug.Log(playerwithHighestScore.playerName + " wins with " + playerwithHighestScore.team.score + " shots.");
+        winner = playerwithHighestScore.playerName + " wins with " + playerwithHighestScore.team.score + " goals.";
+        return winner;
     }
 
     private bool HasMatchStateChanged()
@@ -200,6 +229,18 @@ public class MatchManager : MonoBehaviour
         if (!isGameInitialized)
         {
             players = FindObjectsOfType<Player>();
+
+            foreach (var player in players)
+            {
+                if (teams.Contains(player.team))
+                {
+                    continue;
+                }
+                else
+                {
+                    teams.Add(player.team);
+                }
+            }
             currentPlayer = players[0];
             //matchState = MatchState.Start;
             isGameInitialized = true;

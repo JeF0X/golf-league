@@ -53,6 +53,7 @@ public class StartArea : MonoBehaviour
         {
             balls[i] = Instantiate(balls[i], startPositions[i].transform.position + Vector3.up*0.52f, Quaternion.identity);
             balls[i].SetColor(player.color);
+            balls[i].SetStartPosition();
         }
         hasInstantiatedBalls = true;
     }
@@ -79,8 +80,9 @@ public class StartArea : MonoBehaviour
                 currentBall.transform.position = closestPointToArea + new Vector3(0f, .5f, 0f);
             }
 
-            if (touch.phase == TouchPhase.Ended)
+            if (touch.phase == TouchPhase.Ended && currentBall != null)
             {
+                currentBall.SetStartPosition();
                 currentBall = null;
             }
 

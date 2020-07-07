@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db3c369894ccc345baf489bfaaf8014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootingForce: 500
+  shootingForce: 700
 --- !u!114 &615113877356616711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,8 +144,8 @@ MonoBehaviour:
   shotsTaken: 0
   isMoving: 0
   isInHole: 0
-  ballCamera: {fileID: 0}
-  line: {fileID: 0}
+  ballCamera: {fileID: 4648758482306678653}
+  line: {fileID: 8517825165797425820}
 --- !u!114 &5925251642429530971
 MonoBehaviour:
   m_ObjectHideFlags: 0

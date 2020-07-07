@@ -76,6 +76,7 @@ public class Player : MonoBehaviour
             ball.isInHole = true;
             //FindObjectOfType<Score>().AddGoal(newGoal);
             team.IncrementScore();
+            ball.RespawnToStart();
             Debug.Log(team.teamName + ": Scored a hole in " + ball.shotsTaken + " shots. They now have " + team.score + " goals.");
         }
     }

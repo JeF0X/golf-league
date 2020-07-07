@@ -13,6 +13,7 @@ public class Ball : MonoBehaviour
     public bool isInHole = false;
     float maxVelocity = 0f;
     Vector3 positionBeforeShot = new Vector3();
+    Vector3 startPosition = new Vector3();
     Color color = Color.white;
 
     public CinemachineVirtualCamera ballCamera;
@@ -90,9 +91,20 @@ public class Ball : MonoBehaviour
         transform.position = positionBeforeShot;
     }
 
+    public void RespawnToStart()
+    {
+        myRigidBody.Sleep();
+        transform.position = startPosition;
+    }
+
     public void SaveBallPosition()
     {
         positionBeforeShot = transform.position;
+    }
+
+    public void SetStartPosition()
+    {
+        startPosition = transform.position;
     }
 
 }
