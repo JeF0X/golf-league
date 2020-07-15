@@ -5,31 +5,30 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 
-public enum MatchState
-{
-    Start, PlaceBalls, FindBalls, PlayerTurn, ShotInProgress, End
-}
-
-public class MatchManager : MonoBehaviour
+public class MatchManager : StateMachine
 {
     [SerializeField] float matchTimeInSeconds = 120f;
 
     public Transform debugBallStartPos;
-    public MatchState matchState;
-    private MatchState prevMatchState;
     Player[] players;
     public List<Team> teams = new List<Team>();
     int currentPlayerIndex = 0;
     Player currentPlayer = null;
     Ball[] balls;
     bool isGameInitialized = false;
-    bool startTimer = false;
+    public bool startTimer = false;
 
+    public TouchHandler touchHandler = new TouchHandler();
     public float matchTimer = 0;
 
     private static MatchManager _instance;
     
     public static MatchManager Instance {  get { return _instance; } }
+
+    public State GetState()
+    {
+        return State;
+    }
 
     private void Awake()
     {
@@ -46,97 +45,26 @@ public class MatchManager : MonoBehaviour
     private void Start()
     {
         matchTimer = matchTimeInSeconds;
+        SetState(new Begin(this));
     }
 
     private void Update()
     {
+        State.Tick();
         if (startTimer)
         {
             matchTimer -= Time.deltaTime;
         }
+    }
 
-        if (matchTimer <= 0)
+    public void FindBalls()
+    {
+        balls = FindObjectsOfType<Ball>();
+        foreach (var ball in balls)
         {
-            if (matchState == MatchState.PlayerTurn)
-            {
-                matchState = MatchState.End;
-            }
-            startTimer = false;
+            ball.GetComponent<Rigidbody>().WakeUp();
         }
-
-        if (matchState == MatchState.Start)
-        {
-            InitializeMatch();
-            matchState = MatchState.PlaceBalls;
-        }
-
-        if (matchState == MatchState.PlaceBalls)
-        {
-            
-        }
-
-        if (matchState == MatchState.FindBalls)
-        {
-            balls = FindObjectsOfType<Ball>();
-            foreach (var ball in balls)
-            {
-                ball.GetComponent<Rigidbody>().WakeUp();
-            }
-            SaveBallPositions();
-            matchState = MatchState.PlayerTurn;
-        }
-
-        if (matchState == MatchState.PlayerTurn)
-        {
-            startTimer = true;
-            SetCamera();
-            if (HasMatchStateChanged())
-            {  
-                int ballsInHole = 0;
-                foreach (var ball in balls)
-                {
-                    if (ball.isInHole)
-                    {
-                        ballsInHole++;
-                    }
-                }
-
-                if (ballsInHole == balls.Length)
-                {
-                    matchState = MatchState.End;
-                    return;
-                }
-                Debug.Log(prevMatchState + " " + matchState);
-                if (currentPlayer.AreAllBallsInHole())
-                {
-                    ChangePlayer();
-                    return;
-                }
-
-                SetCamera();
-            }
-        }
-
-        if (matchState == MatchState.ShotInProgress && !AreBallsMoving())
-        {
-            SaveBallPositions();
-            ChangePlayer();
-            Debug.Log(players[currentPlayerIndex] + ": " + players[currentPlayerIndex].playerName + " turn");
-            matchState = MatchState.PlayerTurn;
-        }
-
-        if (matchState == MatchState.End)
-        {
-            if (HasMatchStateChanged())
-            {
-                Debug.Log("Match Ended");
-                FindObjectOfType<CinemachineCoreGetInputTouchAxis>().GetComponent<CinemachineCoreGetInputTouchAxis>().enabled = false;
-                DebugScores();
-            }
-
-        }
-
-        prevMatchState = matchState;
+        SaveBallPositions();
     }
 
     public string DebugScores()
@@ -165,19 +93,7 @@ public class MatchManager : MonoBehaviour
         return winner;
     }
 
-    private bool HasMatchStateChanged()
-    {
-        if (matchState != prevMatchState)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private void SetCamera()
+    public void SetCamera()
     {
         for (int i = 0; i < players.Length; i++)
         {
@@ -192,7 +108,7 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    private void ChangePlayer()
+    public void ChangePlayer()
     {
         currentPlayerIndex++;
         if (currentPlayerIndex >= players.Length)
@@ -202,7 +118,7 @@ public class MatchManager : MonoBehaviour
         currentPlayer = players[currentPlayerIndex];
     }
 
-    private bool AreBallsMoving()
+    public bool AreBallsMoving()
     {
         foreach (var ball in balls)
         {
@@ -215,7 +131,7 @@ public class MatchManager : MonoBehaviour
         return false;
     }
 
-    private void SaveBallPositions()
+    public void SaveBallPositions()
     {
         foreach (var ball in balls)
         {
@@ -224,7 +140,7 @@ public class MatchManager : MonoBehaviour
         Debug.Log("Positions saved");
     }
 
-    private void InitializeMatch()
+    public void InitializeMatch()
     {
         if (!isGameInitialized)
         {
@@ -236,16 +152,16 @@ public class MatchManager : MonoBehaviour
                 {
                     continue;
                 }
-                else
+                else if (player.team == null)
                 {
-                    teams.Add(player.team);
+                    player.team = new Team();
                 }
+                teams.Add(player.team);
+
             }
             currentPlayer = players[0];
-            //matchState = MatchState.Start;
             isGameInitialized = true;
-        }
-        
+        }    
     }
 
 
@@ -259,11 +175,12 @@ public class MatchManager : MonoBehaviour
         return currentPlayer;
     }
 
+    //Used For Buttons
     public void PlayerReady()
     {
         if (currentPlayer == players[players.Length-1])
         {
-            matchState = MatchState.FindBalls;
+            SetState(new PlayerTurn(this));
         }
         else
         {
@@ -271,7 +188,7 @@ public class MatchManager : MonoBehaviour
         }
         
     }
-
+    //Used For Buttons
     public void ChangeBall()
     {
         currentPlayer.ChangeBall();

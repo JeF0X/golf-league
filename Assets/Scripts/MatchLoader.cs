@@ -21,7 +21,6 @@ public class MatchLoader : MonoBehaviour
     {
 
         //InitializeMatch();
-        MatchManager.Instance.matchState = MatchState.Start;
     }
 
     private void InitializeMatch()

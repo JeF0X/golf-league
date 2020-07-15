@@ -40,10 +40,6 @@ public class Ball : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (MatchManager.Instance.matchState == MatchState.PlaceBalls)
-        {
-            myRigidBody.Sleep();
-        }
         //DebugVelocities();
         isMoving = !myRigidBody.IsSleeping();
 
@@ -105,6 +101,12 @@ public class Ball : MonoBehaviour
     public void SetStartPosition()
     {
         startPosition = transform.position;
+    }
+
+    public Ball Instantiate(Vector3 position)
+    {
+        Ball ball = Instantiate(this, position, Quaternion.identity);
+        return ball;
     }
 
 }

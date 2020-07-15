@@ -31,13 +31,13 @@ public class CameraManager : MonoBehaviour
 
     private void Update()
     {
-        if (MatchManager.Instance.matchState != MatchState.PlaceBalls)
+        if (false)
         {
             startCamera.enabled = false;
         }
         else
         {
-            startCamera.enabled = true;
+            startCamera.enabled = false;
         }
     }
 

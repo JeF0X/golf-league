@@ -1,16 +1,46 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TouchHandler
+public class StartTouchHandler
 {
-
-    Vector3 touchInBallPlane = new Vector3();
-    float touchWorldTravel = 0f;
+    float touchWorldTravel;
     Ball currentBall;
+    Vector3 touchInSpawnPlane;
 
-    public static Vector3 MapScreenTouchToWorld(Touch touch, Vector3 objectPos)
+    public void HandleTouchInput()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                CheckIfTouchHitPlayerBall(touch);
+            }
+
+            if (currentBall != null)
+            {
+                StartArea startArea = MatchManager.Instance.GetCurrentPlayer().startArea;
+                touchInSpawnPlane = MapScreenTouchToWorld(touch, startArea.transform.position);
+                touchWorldTravel = Vector3.Distance(startArea.transform.position, touchInSpawnPlane);
+                var collider = startArea.GetComponentInChildren<Collider>();
+                Vector3 closestPointToArea = collider.ClosestPointOnBounds(touchInSpawnPlane);
+                currentBall.transform.position = closestPointToArea + new Vector3(0f, .5f, 0f);
+            }
+
+            if (touch.phase == TouchPhase.Ended && currentBall != null)
+            {
+                currentBall.SetStartPosition();
+                currentBall = null;
+            }
+
+        }
+    }
+
+    public Vector3 MapScreenTouchToWorld(Touch touch, Vector3 objectPos)
     {
         Vector3 screenTouchPosNearPlane = new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane);
         Vector3 touchPosNearPlane = Camera.main.ScreenToWorldPoint(screenTouchPosNearPlane);
@@ -30,32 +60,6 @@ public class TouchHandler
             Debug.LogError("Cannot find ball plane");
         }
         return touchInBallPlane;
-    }
-
-    public void HandleTouchInput()
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
-            {
-                CheckIfTouchHitPlayerBall(touch);
-            }
-
-            if (currentBall != null && !currentBall.isMoving)
-            {
-                touchInBallPlane = MapScreenTouchToWorld(touch, currentBall.transform.position);
-                touchWorldTravel = Vector3.Distance(currentBall.transform.position, touchInBallPlane);
-                currentBall.GetComponent<Shooter>().DrawForceMeterLine(touchInBallPlane);
-            }
-
-            if (touch.phase == TouchPhase.Ended && currentBall != null && !currentBall.isMoving)
-            {
-                currentBall.GetComponent<Shooter>().ShootBall(touchInBallPlane, touchWorldTravel);
-                currentBall = null;
-            }
-        }
     }
 
     private void CheckIfTouchHitPlayerBall(Touch touch)

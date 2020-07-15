@@ -26,6 +26,8 @@ public class Player : MonoBehaviour
         this.balls = balls;
     }
 
+
+
     private void Start()
     {
         Hole.OnHoleEntered += Hole_OnHoleEntered;
@@ -49,7 +51,6 @@ public class Player : MonoBehaviour
         List<Ball> playerBalls = new List<Ball>();
         foreach (var ballInfo in player.balls)
         {
-
             Ball ball = ballPrefab;
             
             ball.SetInfo(ballInfo);     

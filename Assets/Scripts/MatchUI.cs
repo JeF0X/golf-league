@@ -15,6 +15,7 @@ public class MatchUI : MonoBehaviour
     private void Start()
     {
         Hole.OnHoleEntered += Hole_OnHoleEntered;
+        End.OnMatchEnd += End_OnMatchEnd;
         teams = MatchManager.Instance.teams;
         winner.enabled = false;
         StartCoroutine(UpdateScoreUI());
@@ -23,17 +24,17 @@ public class MatchUI : MonoBehaviour
     private void Update()
     {
         timer.text = Mathf.RoundToInt(MatchManager.Instance.matchTimer).ToString();
-
-        if (MatchManager.Instance.matchState == MatchState.End)
-        {
-            winner.text = MatchManager.Instance.DebugScores();
-            winner.enabled = true;
-        }
     }
 
     private void Hole_OnHoleEntered(Ball ball, Hole hole)
     {
         StartCoroutine(UpdateScoreUI());
+    }
+
+    private void End_OnMatchEnd()
+    {
+        winner.text = MatchManager.Instance.DebugScores();
+        winner.enabled = true;
     }
 
     IEnumerator UpdateScoreUI()
@@ -48,5 +49,6 @@ public class MatchUI : MonoBehaviour
     private void OnDestroy()
     {
         Hole.OnHoleEntered -= Hole_OnHoleEntered;
+        End.OnMatchEnd -= End_OnMatchEnd;
     }
 }
