@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class End : State
+public class MatchEnd : State
 {
 
     public static event Action OnMatchEnd;
 
-    public End(MatchManager matchManager) : base(matchManager)
+    public MatchEnd(MatchManager matchManager) : base(matchManager)
     {
     }
 

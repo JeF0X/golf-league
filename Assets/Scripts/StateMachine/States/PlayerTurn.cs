@@ -13,7 +13,7 @@ public class PlayerTurn : State
         MatchManager.touchHandler.HandleTouchInput();
         if (MatchManager.matchTimer <= 0)
         {
-            MatchManager.SetState(new End(MatchManager));
+            MatchManager.SetState(new MatchEnd(MatchManager));
             MatchManager.startTimer = false;
         }
     }

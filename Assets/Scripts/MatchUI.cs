@@ -15,7 +15,7 @@ public class MatchUI : MonoBehaviour
     private void Start()
     {
         Hole.OnHoleEntered += Hole_OnHoleEntered;
-        End.OnMatchEnd += End_OnMatchEnd;
+        MatchEnd.OnMatchEnd += End_OnMatchEnd;
         teams = MatchManager.Instance.teams;
         winner.enabled = false;
         StartCoroutine(UpdateScoreUI());
@@ -49,6 +49,6 @@ public class MatchUI : MonoBehaviour
     private void OnDestroy()
     {
         Hole.OnHoleEntered -= Hole_OnHoleEntered;
-        End.OnMatchEnd -= End_OnMatchEnd;
+        MatchEnd.OnMatchEnd -= End_OnMatchEnd;
     }
 }

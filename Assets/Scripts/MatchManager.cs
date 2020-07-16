@@ -45,7 +45,7 @@ public class MatchManager : StateMachine
     private void Start()
     {
         matchTimer = matchTimeInSeconds;
-        SetState(new Begin(this));
+        SetState(new MatchStart(this));
     }
 
     private void Update()

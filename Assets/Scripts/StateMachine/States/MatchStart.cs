@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Begin : State
+public class MatchStart : State
 {
-    public Begin(MatchManager matchManager) : base(matchManager)
+    public MatchStart(MatchManager matchManager) : base(matchManager)
     {
     }
 
