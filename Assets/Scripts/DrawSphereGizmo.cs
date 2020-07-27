@@ -6,7 +6,7 @@ public class DrawSphereGizmo : MonoBehaviour
 {
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(transform.position, .5f);
+        Gizmos.DrawSphere(transform.position, .25f);
         Gizmos.color = Color.red;
     }
 }

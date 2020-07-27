@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 615113877356616704}
   - component: {fileID: 615113877356616707}
   - component: {fileID: 615113877356616706}
+  - component: {fileID: 3260098955479490879}
   - component: {fileID: 615113877356616717}
   - component: {fileID: 615113877356616710}
   - component: {fileID: 615113877356616711}
@@ -32,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 615113877356616716}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.538, y: 0.5, z: -1.0013}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.42, y: 0.42, z: 0.42}
   m_Children:
   - {fileID: 7549481462177118861}
   - {fileID: 2598017752342823040}
@@ -93,12 +94,27 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615113877356616716}
-  m_Material: {fileID: 13400000, guid: 7c20d285f236cba4fb7837037f0e01aa, type: 2}
+  m_Material: {fileID: 13400000, guid: 8f59925a5903ed7409a2b719e324ad45, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3260098955479490879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615113877356616716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6f641cdd984d1f498af427bf9a33ac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxAngularVelocity: 200
+  rollingCoefficient: 0.2
+  sleepThreshold: 0.2
 --- !u!54 &615113877356616717
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -107,12 +123,12 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615113877356616716}
   serializedVersion: 2
-  m_Mass: 1.2
+  m_Mass: 0.46
   m_Drag: 0
-  m_AngularDrag: 1
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!114 &615113877356616710
@@ -127,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3db3c369894ccc345baf489bfaaf8014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootingForce: 700
+  shootingForce: 400
 --- !u!114 &615113877356616711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11975,7 +11991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 4.05, z: -10}
+  m_FollowOffset: {x: 0, y: 2.95, z: -10}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1

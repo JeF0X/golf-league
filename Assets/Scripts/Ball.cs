@@ -27,6 +27,7 @@ public class Ball : MonoBehaviour
         ballCamera.enabled = false;
         myRigidBody = GetComponent<Rigidbody>();
         myRigidBody.maxAngularVelocity = maxAngularVelocity;
+
         line = GetComponentInChildren<LineRenderer>();
         line.gameObject.SetActive(false);
     }
@@ -42,12 +43,9 @@ public class Ball : MonoBehaviour
     {
         //DebugVelocities();
         isMoving = !myRigidBody.IsSleeping();
-
-        if (myRigidBody.velocity.magnitude < 1f && myRigidBody.velocity.magnitude > 0.0001f)
-        {
-            DampenAngularVelocity();
-        }
     }
+
+
 
     internal void SetInfo(BallInfo ballInfo)
     {
@@ -69,15 +67,6 @@ public class Ball : MonoBehaviour
         {
             maxVelocity = Mathf.Max(velocities);
             Debug.Log(maxVelocity);
-        }
-    }
-
-    private void DampenAngularVelocity()
-    {
-        myRigidBody.AddTorque(-myRigidBody.angularVelocity);
-        if (myRigidBody.velocity.magnitude < 0.01f)
-        {
-            myRigidBody.Sleep();
         }
     }
 

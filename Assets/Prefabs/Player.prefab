@@ -43,8 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56d4b03466797ff49b3defafa312929c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballPrefab: {fileID: 615113877356616711, guid: a9bd3dd68d2e2bf47bfa59172736a038,
+  ballPrefab: {fileID: 5966319975269274470, guid: 641c5f09b69e3014f8c4cca27b9449f7,
     type: 3}
+  startArea: {fileID: 0}
   playerName: Player 1
+  color: {r: 1, g: 0, b: 0, a: 0}
   balls:
-  - {fileID: 0}
+  - {fileID: 615113877356616711, guid: a9bd3dd68d2e2bf47bfa59172736a038, type: 3}
