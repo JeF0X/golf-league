@@ -22,6 +22,20 @@ public class PlayerTurn : State
     {
         MatchManager.startTimer = true;
         MatchManager.SetCamera();
+        if (MatchManager.AreAllBallsInHole())
+        {
+            foreach (var ball in MatchManager.Instance.balls)
+            {
+                ball.isInHole = false;
+            }
+            MatchManager.Instance.NextHole();
+            return base.Enter();
+        }
+        if (MatchManager.GetCurrentPlayer().AreAllBallsInHole())
+        {
+            MatchManager.ChangePlayer();
+            MatchManager.SetState(new PlayerTurn(MatchManager));
+        }
 
         return base.Enter();
     }

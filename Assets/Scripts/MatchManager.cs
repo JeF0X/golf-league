@@ -8,22 +8,37 @@ using Cinemachine;
 public class MatchManager : StateMachine
 {
     [SerializeField] float matchTimeInSeconds = 120f;
-
+    public StartArea[] startAreas;
+    public GameType gameType = GameType.GolfLeague;
     public Transform debugBallStartPos;
     Player[] players;
     public List<Team> teams = new List<Team>();
     int currentPlayerIndex = 0;
     Player currentPlayer = null;
-    Ball[] balls;
+    public Ball[] balls;
     bool isGameInitialized = false;
     public bool startTimer = false;
 
     public TouchHandler touchHandler = new TouchHandler();
     public float matchTimer = 0;
 
+    int startAreaIndex = 0;
+
     private static MatchManager _instance;
     
     public static MatchManager Instance {  get { return _instance; } }
+
+    internal bool AreAllBallsInHole()
+    {
+        foreach (var ball in balls)
+        {
+            if (!ball.isInHole)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public State GetState()
     {
@@ -32,6 +47,7 @@ public class MatchManager : StateMachine
 
     private void Awake()
     {
+        Debug.Log("test");
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
@@ -60,11 +76,12 @@ public class MatchManager : StateMachine
     public void FindBalls()
     {
         balls = FindObjectsOfType<Ball>();
+        SaveBallPositions();
         foreach (var ball in balls)
         {
+            ball.GetComponent<Rigidbody>().isKinematic = false;
             ball.GetComponent<Rigidbody>().WakeUp();
         }
-        SaveBallPositions();
     }
 
     public string DebugScores()
@@ -95,17 +112,7 @@ public class MatchManager : StateMachine
 
     public void SetCamera()
     {
-        for (int i = 0; i < players.Length; i++)
-        {
-            if (players[i] == currentPlayer)
-            {
-                players[i].ToggleCamera(true);
-            }
-            else
-            {
-                players[i].ToggleCamera(false);
-            }
-        }
+        currentPlayer.ToggleCamera();
     }
 
     public void ChangePlayer()
@@ -164,6 +171,23 @@ public class MatchManager : StateMachine
         }    
     }
 
+    public void NextHole()
+    {
+        startAreaIndex++;
+        if (startAreaIndex >= startAreas.Length)
+        {
+            SetState(new MatchEnd(this));
+            return;
+        }
+        foreach (var player in players)
+        {
+            player.hasPlacedBalls = false;
+            player.SetStartArea(startAreas[startAreaIndex]);
+            player.RespawnToNextHole();
+        }
+        SetState(new PlaceBalls(this));
+    }
+
 
     public void ReloadLevel()
     {
@@ -178,14 +202,16 @@ public class MatchManager : StateMachine
     //Used For Buttons
     public void PlayerReady()
     {
-        if (currentPlayer == players[players.Length-1])
+        ChangePlayer();
+        if (currentPlayer.hasPlacedBalls)
         {
             SetState(new PlayerTurn(this));
         }
         else
         {
-            ChangePlayer();
+            SetState(new PlaceBalls(this));
         }
+        
         
     }
     //Used For Buttons

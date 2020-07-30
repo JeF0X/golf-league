@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class Player : MonoBehaviour
     User user;  
     public Team team;
     public Color color;
-
+    public bool hasPlacedBalls = false;
     public List<Ball> balls = new List<Ball>();
 
     PlayerInfo playerInfo;
@@ -46,6 +47,11 @@ public class Player : MonoBehaviour
         color = playerInfo.playerColor;
     }
 
+    public void SetStartArea(StartArea startArea)
+    {
+        this.startArea = startArea;
+    }
+
     private List<Ball> CreatePlayerBalls(PlayerInfo player)
     {
         List<Ball> playerBalls = new List<Ball>();
@@ -66,12 +72,12 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        if (hole == startArea.hole)
+        if (hole == startArea.hole && MatchManager.Instance.gameType == GameType.GolfLeague)
         {
             ball.RespawnBall();
             return;
         }
-        if (balls.Contains(ball))
+        if (balls.Contains(ball) && MatchManager.Instance.gameType == GameType.GolfLeague)
         {
             Goal newGoal = new Goal(Time.time, this, ball.shotsTaken);
             ball.isInHole = true;
@@ -79,6 +85,20 @@ public class Player : MonoBehaviour
             team.IncrementScore();
             ball.RespawnToStart();
             Debug.Log(team.teamName + ": Scored a hole in " + ball.shotsTaken + " shots. They now have " + team.score + " goals.");
+            return;
+        }
+
+        if (MatchManager.Instance.gameType == GameType.MiniGolf)
+        {
+            if (ball.isInHole)
+            {
+                return;
+            }
+            team.IncrementScore();
+            ball.isInHole = true;
+            ball.GetComponent<Rigidbody>().isKinematic = true;
+            ball.gameObject.SetActive(false);
+            MatchManager.Instance.SetState(new PlayerTurn(MatchManager.Instance));
         }
     }
 
@@ -94,9 +114,13 @@ public class Player : MonoBehaviour
         return true;
     }
 
-    public void ToggleCamera(bool isCameraOn)
+    public void ToggleCamera()
     {
-        balls[currentBallIndex].ballCamera.enabled = isCameraOn;
+        if (currentBall == null)
+        {
+            currentBall = balls[0];
+        }
+        CameraManager.Instance.SetActiveCamera(currentBall.ballCamera);
     }
 
     public void ChangeBall()
@@ -113,12 +137,22 @@ public class Player : MonoBehaviour
         }
         currentBall = balls[currentBallIndex];
 
-        currentBall.ballCamera.enabled = true;
-        prevBall.ballCamera.enabled = false;
+        CameraManager.Instance.SetActiveCamera(currentBall.ballCamera);
     }
 
     private void OnDestroy()
     {
         Hole.OnHoleEntered -= Hole_OnHoleEntered;
+    }
+
+    internal void RespawnToNextHole()
+    {
+        foreach (var ball in balls)
+        {
+            ball.gameObject.SetActive(true);
+            ball.GetComponent<Rigidbody>().isKinematic = false;
+            ball.SetStartPosition();
+        }
+        
     }
 }

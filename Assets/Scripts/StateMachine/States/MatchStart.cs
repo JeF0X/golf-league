@@ -12,7 +12,10 @@ public class MatchStart : State
     {
         yield return new WaitForSeconds(0.1f);
         MatchManager.InitializeMatch();
-        MatchManager.SetState(new PlaceBalls(MatchManager));
+        MatchManager.GetCurrentPlayer().startArea.InstantiatePlayerBalls();
+        MatchManager.SetState(new CoureOverview(MatchManager));
+        
         yield break;
     }
+
 }

@@ -5,7 +5,7 @@ using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] CinemachineVirtualCamera startCamera = null;
+    [SerializeField] CinemachineVirtualCamera overViewCam;
     CinemachineVirtualCamera[] cameras;
 
     private static CameraManager _instance;
@@ -29,30 +29,19 @@ public class CameraManager : MonoBehaviour
         cameras = FindObjectsOfType<CinemachineVirtualCamera>();
     }
 
-    private void Update()
-    {
-        if (false)
-        {
-            startCamera.enabled = false;
-        }
-        else
-        {
-            startCamera.enabled = false;
-        }
-    }
 
     public void SetActiveCamera(CinemachineVirtualCamera cameraToActivate)
     {
+        cameras = FindObjectsOfType<CinemachineVirtualCamera>();
         foreach (var camera in cameras)
         {
-            if (camera == cameraToActivate)
-            {
-                camera.enabled = true;
-            }
-            else
-            {
-                camera.enabled = false;
-            }
+            camera.enabled = false;
         }
+        cameraToActivate.enabled = true;
+    }
+
+    public void PlayOverView()
+    {
+        overViewCam.GetComponent<Animator>().Play("Base Layer.Overview");
     }
 }

@@ -328,9 +328,6 @@ GameObject:
   - component: {fileID: 6108951632068091593}
   - component: {fileID: 8190533997846603827}
   - component: {fileID: 8190533997846603826}
-  - component: {fileID: 269735118322919824}
-  - component: {fileID: -9193134170432347401}
-  - component: {fileID: -4313866251692490155}
   - component: {fileID: 1642899610471511909}
   - component: {fileID: 5966319975269274470}
   - component: {fileID: 6969273479917352998}
@@ -433,49 +430,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
---- !u!114 &269735118322919824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8190533997846603830}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f089b73605ff3444e9cbf911e8fa5d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxAngularVelocity: 200
-  sleepThreshold: 0.1
---- !u!114 &-9193134170432347401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8190533997846603830}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f84c2b494cfaa6f47ace22072bcfd959, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxAngularVelocity: 200
-  rollingCoefficent: 0.001
---- !u!114 &-4313866251692490155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8190533997846603830}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6f641cdd984d1f498af427bf9a33ac9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxAngularVelocity: 200
-  rollingCoefficient: 0.2
-  sleepThreshold: 0.01
 --- !u!114 &1642899610471511909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,7 +443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxAngularVelocity: 200
-  sleepThreshold: 0.01
+  sleepThreshold: 0.02
   torqueForce: 0.08
   maxGroundBounceFactor: 0.01
 --- !u!114 &5966319975269274470
@@ -508,6 +462,7 @@ MonoBehaviour:
   shotsTaken: 0
   isMoving: 0
   isInHole: 0
+  hasInstantiated: 0
   ballCamera: {fileID: 6312573948543034939}
   line: {fileID: 7986276024123588520}
 --- !u!114 &6969273479917352998

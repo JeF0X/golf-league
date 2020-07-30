@@ -41,7 +41,6 @@ public class RollingDrag : MonoBehaviour
         if (groundAngle != 0 )
         {
             torqueForce = Mathf.Clamp(groundAngle / 20f, 0f, 0.25f);
-            Debug.Log(torqueForce);
         }
         else
         {
@@ -59,7 +58,6 @@ public class RollingDrag : MonoBehaviour
         
         if (averagePositionDistance < 0.0005f)
         {
-            Debug.Log(averagePositionDistance);
             myRigidbody.Sleep();
             positionDistances.Clear();
             return;

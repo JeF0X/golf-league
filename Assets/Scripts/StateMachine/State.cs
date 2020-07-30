@@ -14,6 +14,7 @@ public abstract class State
 
     public virtual IEnumerator Enter()
     {
+        Debug.Log(GetType());
         yield break;
     }
 

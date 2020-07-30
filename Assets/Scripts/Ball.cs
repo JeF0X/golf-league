@@ -15,7 +15,7 @@ public class Ball : MonoBehaviour
     Vector3 positionBeforeShot = new Vector3();
     Vector3 startPosition = new Vector3();
     Color color = Color.white;
-
+    public bool hasInstantiated = false;
     public CinemachineVirtualCamera ballCamera;
     public LineRenderer line;
     Rigidbody myRigidBody;
@@ -78,6 +78,7 @@ public class Ball : MonoBehaviour
 
     public void RespawnToStart()
     {
+
         myRigidBody.Sleep();
         transform.position = startPosition;
     }

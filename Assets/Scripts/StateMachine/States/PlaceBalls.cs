@@ -11,13 +11,14 @@ public class PlaceBalls : State
 
     public override IEnumerator Enter()
     {
+        MatchManager.GetCurrentPlayer().startArea.MoveBallsToStartArea();
+        MatchManager.GetCurrentPlayer().startArea.ActivateCamera();
         yield break;
     }
 
     public override void Tick()
     {
         startTouchHandler.HandleTouchInput();
-        MatchManager.GetCurrentPlayer().startArea.InstantiatePlayerBalls();
     }
 
     public override IEnumerator Exit()

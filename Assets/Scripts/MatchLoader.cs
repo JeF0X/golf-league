@@ -11,32 +11,37 @@ public class MatchLoader : MonoBehaviour
     Player[] players;
     StartArea[] startAreas;
 
-    private void Awake()
-    {
-        startAreas = FindObjectsOfType<StartArea>();
-        CreatePlayers();
-    }
-
     private void Start()
     {
-
-        //InitializeMatch();
-    }
-
-    private void InitializeMatch()
-    {
-        throw new NotImplementedException();
+        MatchManager.Instance.gameType = matchSettings.gameType;
+        startAreas = MatchManager.Instance.startAreas;
+        CreatePlayers();
     }
 
     public void CreatePlayers()
     {
-        int startAreaIndex = 0;
-        foreach (var playerInfo in matchSettings.players)
+        if (matchSettings.gameType == GameType.GolfLeague)
         {
-            Player player = playerPrefab;
-            player.SetPlayerInfo(playerInfo, startAreas[startAreaIndex]);
-            Instantiate(player);
-            startAreaIndex++;
+            int startAreaIndex = 0;
+            foreach (var playerInfo in matchSettings.players)
+            {
+                Player player = playerPrefab;
+                player.SetPlayerInfo(playerInfo, startAreas[startAreaIndex]);
+                Instantiate(player);
+                startAreaIndex++;
+            }
         }
+        else if (matchSettings.gameType == GameType.MiniGolf)
+        {
+            int startAreaIndex = 0;
+            foreach (var playerInfo in matchSettings.players)
+            {
+                Player player = playerPrefab;
+                player.SetPlayerInfo(playerInfo, startAreas[0]);
+                Instantiate(player);
+                startAreaIndex++;
+            }
+        }
+        
     }
 }
