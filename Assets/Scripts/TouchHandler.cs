@@ -40,7 +40,7 @@ public class TouchHandler
 
             if (touch.phase == TouchPhase.Began)
             {
-                CheckIfTouchHitPlayerBall(touch);
+                CheckIfTouchHitBall(touch);
             }
 
             if (currentBall != null && !currentBall.isMoving)
@@ -58,7 +58,7 @@ public class TouchHandler
         }
     }
 
-    private void CheckIfTouchHitPlayerBall(Touch touch)
+    private void CheckIfTouchHitBall(Touch touch)
     {
         RaycastHit raycastHit;
         Ray ray = Camera.main.ScreenPointToRay(touch.position);

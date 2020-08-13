@@ -1,16 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShotInProgress : State
 {
+    public static event Action OnShotInProgress;
+
     public ShotInProgress(MatchManager matchManager) : base(matchManager)
     {
     }
 
     public override IEnumerator Enter()
     {
-        
+        MatchManager.DebugScores();
+        MatchManager.GetCurrentPlayer().AddShot();
+        if (OnShotInProgress != null)
+        {
+            OnShotInProgress();
+        }
         return base.Enter();
     }
 

@@ -1,19 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlaceBalls : State
 {
     StartTouchHandler startTouchHandler = new StartTouchHandler();
+
+    public static event Action OnPlaceBalls;
+
     public PlaceBalls(MatchManager matchManager) : base(matchManager)
     {
     }
 
     public override IEnumerator Enter()
     {
+        if (OnPlaceBalls != null)
+        {
+            OnPlaceBalls();
+        }
+
         MatchManager.GetCurrentPlayer().startArea.MoveBallsToStartArea();
         MatchManager.GetCurrentPlayer().startArea.ActivateCamera();
-        yield break;
+        return base.Enter();
     }
 
     public override void Tick()

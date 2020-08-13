@@ -6,6 +6,7 @@ using Cinemachine;
 public class CameraManager : MonoBehaviour
 {
     [SerializeField] CinemachineVirtualCamera overViewCam;
+    [SerializeField] OverviewPlayer overviewPlayer;
     CinemachineVirtualCamera[] cameras;
 
     private static CameraManager _instance;
@@ -42,6 +43,6 @@ public class CameraManager : MonoBehaviour
 
     public void PlayOverView()
     {
-        overViewCam.GetComponent<Animator>().Play("Base Layer.Overview");
+        overviewPlayer.GetComponent<Animator>().SetTrigger("playOverview");
     }
 }

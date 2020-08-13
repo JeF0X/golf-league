@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,6 @@ public abstract class State
 
     public virtual IEnumerator Enter()
     {
-        Debug.Log(GetType());
         yield break;
     }
 

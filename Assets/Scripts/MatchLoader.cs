@@ -10,11 +10,13 @@ public class MatchLoader : MonoBehaviour
 
     Player[] players;
     StartArea[] startAreas;
+    PlayerScore[] playerScores;
 
     private void Start()
     {
         MatchManager.Instance.gameType = matchSettings.gameType;
         startAreas = MatchManager.Instance.startAreas;
+        playerScores = FindObjectsOfType<PlayerScore>();
         CreatePlayers();
     }
 
@@ -23,21 +25,23 @@ public class MatchLoader : MonoBehaviour
         if (matchSettings.gameType == GameType.GolfLeague)
         {
             int startAreaIndex = 0;
-            foreach (var playerInfo in matchSettings.players)
+            for (int playerIndex = 0; playerIndex < matchSettings.players.Count; playerIndex++)
             {
                 Player player = playerPrefab;
-                player.SetPlayerInfo(playerInfo, startAreas[startAreaIndex]);
+                player.SetPlayerInfo(matchSettings.players[playerIndex], startAreas[startAreaIndex], playerScores[playerIndex]);
                 Instantiate(player);
                 startAreaIndex++;
             }
+
         }
         else if (matchSettings.gameType == GameType.MiniGolf)
         {
             int startAreaIndex = 0;
-            foreach (var playerInfo in matchSettings.players)
+
+            for (int playerIndex = 0; playerIndex < matchSettings.players.Count; playerIndex++)
             {
                 Player player = playerPrefab;
-                player.SetPlayerInfo(playerInfo, startAreas[0]);
+                player.SetPlayerInfo(matchSettings.players[playerIndex], startAreas[0], playerScores[playerIndex]);
                 Instantiate(player);
                 startAreaIndex++;
             }

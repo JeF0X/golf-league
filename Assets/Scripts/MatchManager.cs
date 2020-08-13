@@ -11,7 +11,7 @@ public class MatchManager : StateMachine
     public StartArea[] startAreas;
     public GameType gameType = GameType.GolfLeague;
     public Transform debugBallStartPos;
-    Player[] players;
+    public Player[] players;
     public List<Team> teams = new List<Team>();
     int currentPlayerIndex = 0;
     Player currentPlayer = null;
@@ -47,7 +47,6 @@ public class MatchManager : StateMachine
 
     private void Awake()
     {
-        Debug.Log("test");
         if (_instance != null && _instance != this)
         {
             Destroy(this.gameObject);
@@ -79,7 +78,7 @@ public class MatchManager : StateMachine
         SaveBallPositions();
         foreach (var ball in balls)
         {
-            ball.GetComponent<Rigidbody>().isKinematic = false;
+            ball.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             ball.GetComponent<Rigidbody>().WakeUp();
         }
     }
@@ -88,26 +87,52 @@ public class MatchManager : StateMachine
     {
         Player playerwithHighestScore = null;
         string winner;
-
-        foreach (var player in players)
+        if (gameType == GameType.GolfLeague)
         {
-            if (playerwithHighestScore == null)
+            foreach (var player in players)
             {
-                playerwithHighestScore = player;
+                if (playerwithHighestScore == null)
+                {
+                    playerwithHighestScore = player;
+                }
+                else if (player.team.score > playerwithHighestScore.team.score)
+                {
+                    playerwithHighestScore = player;
+                }
+                else if (player.team.score == playerwithHighestScore.team.score)
+                {
+                    winner = "It's a tie with " + playerwithHighestScore.team.score + " goals.";
+
+                    return winner;
+                }
             }
-            else if (player.team.score > playerwithHighestScore.team.score)
-            {
-                playerwithHighestScore = player;
-            }
-            else if (player.team.score == playerwithHighestScore.team.score)
-            {
-                winner = "It's a tie with " + playerwithHighestScore.team.score + " goals.";
-                
-                return winner;
-            }
+            winner = playerwithHighestScore.playerName + " wins with " + playerwithHighestScore.team.score + " goals.";
         }
-        winner = playerwithHighestScore.playerName + " wins with " + playerwithHighestScore.team.score + " goals.";
+
+        else
+        {
+            foreach (var player in players)
+            {
+                if (playerwithHighestScore == null)
+                {
+                    playerwithHighestScore = player;
+                }
+                else if (player.shots < playerwithHighestScore.shots)
+                {
+                    playerwithHighestScore = player;
+                }
+                else if (player.team.score == playerwithHighestScore.team.score)
+                {
+                    winner = "It's a tie with " + playerwithHighestScore.shots + " shots.";
+
+                    return winner;
+                }
+            }
+            winner = playerwithHighestScore.playerName + " wins with " + playerwithHighestScore.shots + " shots.";
+        }
+
         return winner;
+
     }
 
     public void SetCamera()
@@ -144,7 +169,6 @@ public class MatchManager : StateMachine
         {
             ball.SaveBallPosition();
         }
-        Debug.Log("Positions saved");
     }
 
     public void InitializeMatch()

@@ -11,6 +11,7 @@ public class RollingDrag : MonoBehaviour
     [SerializeField] float maxGroundBounceFactor = 0.01f;
 
     static int speedsQueueLenght = 10;
+    float positionTimer = 0f;
     Rigidbody myRigidbody;
     float maxPosition = 0;
     float groundAngle = 0f;
@@ -27,20 +28,37 @@ public class RollingDrag : MonoBehaviour
         myRigidbody.maxAngularVelocity = maxAngularVelocity;
         myRigidbody.sleepThreshold = sleepThreshold;
         lastPosition = transform.position;
-        StartCoroutine(CalcAveragePositionDifference());
     }
 
+    private void OnEnable()
+    {
+        //StartCoroutine(CalcAveragePositionDifference());
+    }
+    private void OnDisable()
+    {
+        //StopCoroutine(CalcAveragePositionDifference());
+    }
+
+
     private void FixedUpdate()
-    {      
+    {
+        CalcAveragePositionDifference();
+        if (myRigidbody.IsSleeping())
+        {
+            positionDistances.Clear();
+            return;
+        }
+
+        
+
         if (!CheckGrounded())
         {
-            Debug.Log(gameObject.name + " is not grounded");
             return;
         }
 
         if (groundAngle != 0 )
         {
-            torqueForce = Mathf.Clamp(groundAngle / 20f, 0f, 0.25f);
+            torqueForce = Mathf.Clamp(groundAngle / 10f, 0f, 0.25f);
         }
         else
         {
@@ -51,7 +69,7 @@ public class RollingDrag : MonoBehaviour
         {
             myRigidbody.freezeRotation = false;
         }
-        else if (myRigidbody.angularVelocity.magnitude < 0.003f && groundAngle < 7f)
+        else if (myRigidbody.angularVelocity.magnitude < 0.006f && groundAngle < 7f)
         {
             myRigidbody.freezeRotation = true;
         }
@@ -67,13 +85,16 @@ public class RollingDrag : MonoBehaviour
         myRigidbody.AddTorque(torque);
     }
 
-    IEnumerator CalcAveragePositionDifference()
+    private void CalcAveragePositionDifference()
     {
-        while (true)
+        positionTimer += Time.deltaTime;
+
+        if (positionTimer > 0.1f )
         {
             averagePositionDistance = AveragePosition();
-            yield return new WaitForSeconds(0.1f);
+            positionTimer = 0f;
         }
+           
     }
 
     public bool CheckGrounded()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public class MatchUI : MonoBehaviour
 {
@@ -10,45 +11,100 @@ public class MatchUI : MonoBehaviour
     [SerializeField] TMP_Text timer = null;
     [SerializeField] TMP_Text winner = null;
 
+
+    UIElement[] uIElements;
     List<Team> teams = new List<Team>();
 
     private void Start()
     {
-        Hole.OnHoleEntered += Hole_OnHoleEntered;
-        MatchEnd.OnMatchEnd += End_OnMatchEnd;
+        MatchStart.OnMatchStart += MatchStart_OnMatchStart;
+        CoureOverview.OnCourseOverview += CoureOverview_OnCourseOverview;
+        PlaceBalls.OnPlaceBalls += PlaceBalls_OnPlaceBalls;
+        PlayerTurn.OnPlayerTurn += PlayerTurn_OnPlayerTurn;
+        ShotInProgress.OnShotInProgress += ShotInProgress_OnShotInProgress;
+        MatchEnd.OnMatchEnd += MatchEnd_OnMatchEnd;
+
+        uIElements = GetComponentsInChildren<UIElement>();
         teams = MatchManager.Instance.teams;
         winner.enabled = false;
-        StartCoroutine(UpdateScoreUI());
     }
 
     private void Update()
     {
-        timer.text = Mathf.RoundToInt(MatchManager.Instance.matchTimer).ToString();
+        if (MatchManager.Instance.gameType == GameType.GolfLeague)
+        {
+            timer.text = Mathf.RoundToInt(MatchManager.Instance.matchTimer).ToString();
+        }
+        else
+        {
+            timer.gameObject.SetActive(false);
+        }
     }
 
-    private void Hole_OnHoleEntered(Ball ball, Hole hole)
+    public void LoadMainMenu()
     {
-        StartCoroutine(UpdateScoreUI());
+        SceneManager.LoadScene(0);
     }
 
-    private void End_OnMatchEnd()
+
+    private void MatchStart_OnMatchStart()
     {
+        foreach (var element in uIElements)
+        {
+            element.gameObject.SetActive(element.onMatchStart);
+        }
+    }
+
+    private void CoureOverview_OnCourseOverview()
+    {
+        foreach (var element in uIElements)
+        {
+            element.gameObject.SetActive(element.onCourseOverview);
+        }
+    }
+
+    private void PlaceBalls_OnPlaceBalls()
+    {
+        foreach (var element in uIElements)
+        {
+            element.gameObject.SetActive(element.onPlaceBalls);
+        }
+    }
+
+    private void PlayerTurn_OnPlayerTurn()
+    {
+        foreach (var element in uIElements)
+        {
+            element.gameObject.SetActive(element.onPlayerTurn);
+        }
+    }
+
+    private void ShotInProgress_OnShotInProgress()
+    {
+        foreach (var element in uIElements)
+        {
+            element.gameObject.SetActive(element.onShotInProgress);
+        }
+    }
+
+    private void MatchEnd_OnMatchEnd()
+    {
+        foreach (var element in uIElements)
+        {
+            element.gameObject.SetActive(element.onMatchEnd);
+        }
+
         winner.text = MatchManager.Instance.DebugScores();
         winner.enabled = true;
     }
 
-    IEnumerator UpdateScoreUI()
-    {
-        yield return new WaitForSeconds(0.5f);
-        for (int teamIndex = 0; teamIndex < teams.Count; teamIndex++)
-        {
-            teamScores[teamIndex].text = teams[teamIndex].score.ToString();
-        }
-    }
-
     private void OnDestroy()
     {
-        Hole.OnHoleEntered -= Hole_OnHoleEntered;
-        MatchEnd.OnMatchEnd -= End_OnMatchEnd;
+        MatchStart.OnMatchStart -= MatchStart_OnMatchStart;
+        CoureOverview.OnCourseOverview -= CoureOverview_OnCourseOverview;
+        PlaceBalls.OnPlaceBalls -= PlaceBalls_OnPlaceBalls;
+        PlayerTurn.OnPlayerTurn -= PlayerTurn_OnPlayerTurn;
+        ShotInProgress.OnShotInProgress -= ShotInProgress_OnShotInProgress;
+        MatchEnd.OnMatchEnd -= MatchEnd_OnMatchEnd;
     }
 }

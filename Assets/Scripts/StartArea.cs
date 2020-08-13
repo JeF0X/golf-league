@@ -15,7 +15,18 @@ public class StartArea : MonoBehaviour
 
     private void Start()
     {
+        PlaceBalls.OnPlaceBalls += PlaceBalls_OnPlaceBalls;
+        PlayerTurn.OnPlayerTurn += PlayerTurn_OnPlayerTurn;
         startPositions = GetComponentsInChildren<StartPosition>();
+    }
+    private void PlaceBalls_OnPlaceBalls()
+    {
+        GetComponentInChildren<Collider>().enabled = true;
+    }
+
+    private void PlayerTurn_OnPlayerTurn()
+    {
+        GetComponentInChildren<Collider>().enabled = false;
     }
 
 
@@ -30,7 +41,7 @@ public class StartArea : MonoBehaviour
             {
                 if (!balls[i].hasInstantiated)
                 {
-                    balls[i] = Instantiate(balls[i], startPositions[startPositionIndex].transform.position + Vector3.up * 0.52f, Quaternion.identity);
+                    balls[i] = Instantiate(balls[i], startPositions[startPositionIndex].transform.position, Quaternion.identity);
                     balls[i].gameObject.SetActive(false);
                     balls[i].hasInstantiated = true;
                     balls[i].SetColor(player.color);
@@ -60,7 +71,7 @@ public class StartArea : MonoBehaviour
         {
             balls[i].transform.position = startPositions[startPositionIndex].transform.position + Vector3.up * 0.52f;
             balls[i].gameObject.SetActive(true);
-            balls[i].GetComponent<Rigidbody>().isKinematic = true;
+            balls[i].GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
             balls[i].SetColor(player.color);
             balls[i].SetStartPosition();
             balls[i].isInHole = false;
@@ -71,5 +82,9 @@ public class StartArea : MonoBehaviour
     }
 
 
-
+    private void OnDestroy()
+    {
+        PlaceBalls.OnPlaceBalls -= PlaceBalls_OnPlaceBalls;
+        PlayerTurn.OnPlayerTurn -= PlayerTurn_OnPlayerTurn;
+    }
 }
