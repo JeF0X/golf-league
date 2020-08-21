@@ -121,7 +121,7 @@ public class MatchManager : StateMachine
                 {
                     playerwithHighestScore = player;
                 }
-                else if (player.team.score == playerwithHighestScore.team.score)
+                else if (player.shots == playerwithHighestScore.shots)
                 {
                     winner = "It's a tie with " + playerwithHighestScore.shots + " shots.";
 
